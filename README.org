@@ -1,1 +1,56 @@
-* Chop It: a simple parsing library
+* Chop It! A simple parsing library
+
+  Chop It! Is a work in progress parsing library. It currently supports only CSV
+  (Comma Separated Values) parsing, but is soon going to support many other file
+  formats.
+
+** Parsing CSV files
+
+  The library provides CSV parsing features through a recursive descent
+  approach. The supported context-free grammar is a simplified version of the
+  official CSV grammar from [[https://www.rfc-editor.org/rfc/rfc4180][RFC 4180]], written in [[https://www.rfc-editor.org/rfc/rfc2234][ABNF]] (Augmented Backus-Naur
+  Form):
+
+  #+begin_example
+
+  file = [header CLRF] record *(CLRF record) [CLRF]
+
+  header = name *(COMMA name)
+
+  record = field *(COMMA field) / enclosed_field *(COMMA enclosed_fielid)
+
+  name = field
+
+  enclosed_field = DQUOTE *(TEXTDATA / COMMA) DQUOTE
+
+  field = *(TEXTDATA)
+
+  COMMA = %x2C
+
+  CR = %x0D
+
+  DQUOTE = %x22
+
+  LF = %x0A
+
+  CRLF = CR LF
+
+  TEXTDATA =  %x20-21 / %x23-2B / %x2D-7E
+
+  #+end_example
+
+  This simplified grammar assumes that:
+
+  1. There may be an optional =header= line appearing as the first line of the
+     file with the same format as normal record lines. This headers will contain
+     =name= (s) corresponding to the =field= (s) in the =file=.
+  2. Each =record= is located on a separate line, delimited by a line break (=CLRF=).
+  3. The last record in the file may or may not have an ending line break.
+  4. Each =record= consints a number of =field= (s) that should be equal to the
+     number of the =names= (s) in the =header=.
+  5. Each =field= consists of a sequence of any ASCII character but the double
+     quote, enclosed between double quotes.
+
+  Imposing such limitations to the original grammar, thus to the language it
+  generates, largely eases the complexity of our parser. Nonetheless, being this
+  CSV "dialect" quite common, this parser allows real world usage.
