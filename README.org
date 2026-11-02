@@ -1,6 +1,6 @@
-* Chop It! A simple parsing library
+* ChopDat! A simple parsing library
 
-  Chop It! Is a work in progress parsing library. It currently supports only CSV
+  ChopDat is a work in progress parsing library. It currently supports only CSV
   (Comma Separated Values) parsing, but is soon going to support many other file
   formats.
 
